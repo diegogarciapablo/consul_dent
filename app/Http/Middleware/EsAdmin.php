@@ -4,14 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class EsAdmin
 {
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): \Symfony\Component\HttpFoundation\Response
     {
         $user = $request->user();
 

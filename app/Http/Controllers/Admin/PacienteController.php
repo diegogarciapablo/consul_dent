@@ -3,42 +3,71 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\PacienteRequest;
+use App\Models\Paciente;
+use App\Models\User;
 
 class PacienteController extends Controller
 {
     public function index()
     {
-        return response('Paciente index');
+        $pacientes = Paciente::with('user')->paginate(10);
+
+        return view('admin.pacientes.index', compact('pacientes'));
     }
 
     public function create()
     {
-        return response('Paciente create');
+        $usuarios = User::where('role', 'paciente')
+            ->whereDoesntHave('paciente')
+            ->get();
+
+        return view('admin.pacientes.create', compact('usuarios'));
     }
 
-    public function store(Request $request)
+    public function store(PacienteRequest $request)
     {
-        return response('Paciente store');
+        Paciente::create($request->validated());
+
+        return redirect()
+            ->route('admin.pacientes.index')
+            ->with('success', 'Paciente registrado correctamente.');
     }
 
-    public function show($id)
+    public function show(Paciente $paciente)
     {
-        return response("Paciente show {$id}");
+        $paciente->load(['user', 'citas']);
+
+        return view('admin.pacientes.show', compact('paciente'));
     }
 
-    public function edit($id)
+    public function edit(Paciente $paciente)
     {
-        return response("Paciente edit {$id}");
+        $usuarios = User::where('role', 'paciente')
+            ->where(function ($query) use ($paciente) {
+                $query->whereDoesntHave('paciente')
+                    ->orWhere('id', $paciente->user_id);
+            })
+            ->get();
+
+        return view('admin.pacientes.edit', compact('paciente', 'usuarios'));
     }
 
-    public function update(Request $request, $id)
+    public function update(PacienteRequest $request, Paciente $paciente)
     {
-        return response("Paciente update {$id}");
+        $paciente->update($request->validated());
+
+        return redirect()
+            ->route('admin.pacientes.index')
+            ->with('success', 'Paciente actualizado correctamente.');
     }
 
-    public function destroy($id)
+    public function destroy(Paciente $paciente)
     {
-        return response("Paciente destroy {$id}");
+        $paciente->delete();
+
+        return redirect()
+            ->route('admin.pacientes.index')
+            ->with('success', 'Paciente eliminado correctamente.');
     }
 }

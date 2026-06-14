@@ -3,42 +3,75 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\DentistaRequest;
+use App\Models\Dentista;
+use App\Models\User;
 
 class DentistaController extends Controller
 {
     public function index()
     {
-        return response('Dentista index');
+        $dentistas = Dentista::with('user')
+            ->join('users', 'dentistas.user_id', '=', 'users.id')
+            ->orderBy('users.name')
+            ->select('dentistas.*')
+            ->paginate(10);
+
+        return view('admin.dentistas.index', compact('dentistas'));
     }
 
     public function create()
     {
-        return response('Dentista create');
+        $usuarios = User::where('role', 'dentista')
+            ->whereDoesntHave('dentista')
+            ->get();
+
+        return view('admin.dentistas.create', compact('usuarios'));
     }
 
-    public function store(Request $request)
+    public function store(DentistaRequest $request)
     {
-        return response('Dentista store');
+        Dentista::create($request->validated());
+
+        return redirect()
+            ->route('admin.dentistas.index')
+            ->with('success', 'Dentista registrado correctamente.');
     }
 
-    public function show($id)
+    public function show(Dentista $dentista)
     {
-        return response("Dentista show {$id}");
+        $dentista->load(['user', 'citas']);
+
+        return view('admin.dentistas.show', compact('dentista'));
     }
 
-    public function edit($id)
+    public function edit(Dentista $dentista)
     {
-        return response("Dentista edit {$id}");
+        $usuarios = User::where('role', 'dentista')
+            ->where(function ($query) use ($dentista) {
+                $query->whereDoesntHave('dentista')
+                    ->orWhere('id', $dentista->user_id);
+            })
+            ->get();
+
+        return view('admin.dentistas.edit', compact('dentista', 'usuarios'));
     }
 
-    public function update(Request $request, $id)
+    public function update(DentistaRequest $request, Dentista $dentista)
     {
-        return response("Dentista update {$id}");
+        $dentista->update($request->validated());
+
+        return redirect()
+            ->route('admin.dentistas.index')
+            ->with('success', 'Dentista actualizado correctamente.');
     }
 
-    public function destroy($id)
+    public function destroy(Dentista $dentista)
     {
-        return response("Dentista destroy {$id}");
+        $dentista->delete();
+
+        return redirect()
+            ->route('admin.dentistas.index')
+            ->with('success', 'Dentista eliminado correctamente.');
     }
 }

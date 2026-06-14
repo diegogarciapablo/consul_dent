@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified', 'es_dentista'])
     ->prefix('dentista')
     ->name('dentista.')
     ->group(function () {
-        Route::view('/dashboard', 'dentista.dashboard')->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\Dentista\DashboardController::class, 'index'])->name('dashboard');
         Route::get('agenda', [App\Http\Controllers\Dentista\AgendaController::class, 'index'])->name('agenda.index');
         Route::get('citas/{cita}', [App\Http\Controllers\Dentista\AgendaController::class, 'show'])->name('citas.show');
         Route::resource('horarios', App\Http\Controllers\Dentista\HorarioController::class)->except(['show']);
