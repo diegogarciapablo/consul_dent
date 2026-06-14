@@ -67,9 +67,13 @@
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-col gap-4 sm:flex-row">
-                <a href="{{ route('dentista.agenda.index') }}" class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Ver agenda completa</a>
-                <a href="{{ route('dentista.horarios.index') }}" class="inline-flex items-center justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">Gestionar horarios</a>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <a href="{{ route('dentista.agenda.index') }}" class="block w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md hover:opacity-90 text-center mb-3">
+                    Ver mi agenda
+                </a>
+                <a href="{{ route('dentista.horarios.index') }}" class="block w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-md hover:opacity-90 text-center mb-3">
+                    Gestionar horarios
+                </a>
             </div>
         </div>
     </div>

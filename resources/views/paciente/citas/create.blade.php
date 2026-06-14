@@ -132,7 +132,7 @@
                         <input type="hidden" name="hora_inicio" :value="hora_inicio">
 
                         <button type="submit"
-                            class="w-full bg-green-600 text-white font-semibold py-3 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 mt-4">
+                            class="w-full bg-green-600 text-white font-semibold py-3 px-4 rounded-md hover:bg-green-700 mt-4">
                             Confirmar reserva
                         </button>
                     </form>
